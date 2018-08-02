@@ -1,0 +1,82 @@
+{% extends 'blog/base.html' %}
+  {% load staticfiles %}
+{% block style %}
+    <style>
+        body {
+            padding: 0 !important;
+            background-image: url("{% static 'img/bg.jpg' %}");
+            background-size: cover;
+        }
+
+        .form-layout {
+            display: flex;
+            width: 100vw;
+            height: 100vh;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+{% endblock style %}
+{% block header %}
+{% endblock header %}
+
+{% block content %}
+    <div class="am-g form-layout">
+        <div class="am-u-md-4 am-u-md-centered ">
+            <form  action="{% url 'go' %}" method="post"  id="form-go" style="background: #fff; box-shadow: 0 0 10px #000;">
+                {% csrf_token %}
+                <input type="hidden" name="next" id="next" value="{{ next }}">
+                <!--<input type='hidden' name='csrfmiddlewaretoken' value='8RYkYKowaYUkeNAab9IUXV6Pbrp3q1wZ69hQ9dVS9fRHtbSeMflBbGuRYvXqvJ4i' />-->
+                <fieldset>
+                    <legend>欢迎登录<a class="am-align-right" href="/blog/">返回首页</a></legend>
+                    <div class="am-form-group">
+                        <label for="username">用户名</label>
+                        <input type="text" name="username" placeholder="输入用户名">
+                    </div>
+                    <div class="am-form-group">
+                        <label for="password">&nbsp;&nbsp;密码&nbsp;&nbsp;</label>
+                        <input type="password" name="password" placeholder="输入密码">
+                    </div>
+                    <div class="am-checkbox">
+                        <label>
+                            <input type="checkbox" name="remember" checked> 记住我
+                        </label>
+                        <label class="am-align-right">
+                            没有账号? <a href="/user/reg/">注册</a>
+                        </label>
+                    </div>
+                    <p>
+                        <button type="submit" class="am-btn am-btn-block am-btn-success">登录</button>
+                    </p>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+
+    <script src="{% static 'js/jquery-3.3.1.js' %}"></script>
+		<script>
+			$(function(){
+			    $('#form-go').submit(function(){
+			           $.ajax({
+			                   url:"{% url 'go' %}",
+			                   type:"post",
+			                   data:$("#form-go").serialize(),
+			                   success:function(data){
+			                         if(data=='登录成功'){
+			                              if($('#next').val()){
+			                                  location.href=$('#next').val()
+			                              }else{
+			                                  location.href='http://127.0.0.1:8000/blog'
+			                              }
+			                         }
+			                         else {
+			                               alert(data)
+			                         }
+			                   }
+			           })
+			           return false
+			    })
+			})
+		</script>
+
+{% endblock content %}
